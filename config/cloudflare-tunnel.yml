@@ -1,0 +1,42 @@
+# Cloudflare Tunnel Configuration
+# Replace YOUR_TUNNEL_ID with your actual tunnel ID from Cloudflare
+
+tunnel: YOUR_TUNNEL_ID
+credentials-file: /etc/cloudflared/credentials.json
+
+# Ingress rules - routes traffic to local services
+ingress:
+  # Main dashboard
+  - hostname: logs.yourdomain.com
+    service: http://localhost:3000
+
+  # API backend
+  - hostname: logs-api.yourdomain.com
+    service: http://localhost:8000
+
+  # Kafka UI (optional - for admin access)
+  - hostname: kafka-ui.yourdomain.com
+    service: http://localhost:8080
+
+  # Kibana (optional - for advanced log analysis)
+  - hostname: kibana.yourdomain.com
+    service: http://localhost:5601
+
+  # Spark UI (optional - for monitoring Spark jobs)
+  - hostname: spark.yourdomain.com
+    service: http://localhost:8081
+
+  # Catch-all rule (required)
+  - service: http_status:404
+
+# Logging configuration
+loglevel: info
+logfile: /var/log/cloudflared.log
+
+# Connection settings
+retries: 3
+retry-interval: 30s
+grace-period: 30s
+
+# Metrics (optional)
+metrics: 0.0.0.0:8182
