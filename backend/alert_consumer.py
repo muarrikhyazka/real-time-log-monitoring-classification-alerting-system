@@ -114,8 +114,8 @@ class AlertManager:
         """Process and send alert via configured channels"""
         logger.info(f"Processing alert: {alert_data}")
 
-        # Send to Slack
-        self.send_slack_alert(alert_data)
+        # Send to Slack (disabled for now, but code kept for future use)
+        # self.send_slack_alert(alert_data)
 
         # Send to Telegram
         self.send_telegram_alert(alert_data)

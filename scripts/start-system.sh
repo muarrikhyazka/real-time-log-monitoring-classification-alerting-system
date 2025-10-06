@@ -38,6 +38,54 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
+# Check if .env file exists
+if [ ! -f .env ]; then
+    print_warning ".env file not found!"
+    echo ""
+    echo "Would you like to configure the .env file now? (y/n)"
+    read -r response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        if [ -f .env.example ]; then
+            cp .env.example .env
+            print_status ".env file created from .env.example"
+            echo ""
+            print_status "Please edit the .env file with your configuration:"
+            echo "  - TELEGRAM_BOT_TOKEN"
+            echo "  - TELEGRAM_CHAT_ID"
+            echo "  - SLACK_WEBHOOK_URL (optional)"
+            echo "  - CLOUDFLARE_TUNNEL_ID"
+            echo ""
+            echo "Choose your editor:"
+            echo "  1) nano"
+            echo "  2) vim"
+            echo "  3) Skip (edit manually later)"
+            read -r editor_choice
+            case $editor_choice in
+                1)
+                    nano .env
+                    ;;
+                2)
+                    vim .env
+                    ;;
+                3)
+                    print_warning "Skipping .env editing. Please configure it manually before running the system."
+                    exit 0
+                    ;;
+                *)
+                    print_warning "Invalid choice. Please edit .env manually."
+                    exit 0
+                    ;;
+            esac
+        else
+            print_error ".env.example not found. Cannot create .env file."
+            exit 1
+        fi
+    else
+        print_error "Cannot start system without .env file."
+        exit 1
+    fi
+fi
+
 # Step 1: Start infrastructure services
 print_status "Starting infrastructure services (Kafka, Elasticsearch, Spark)..."
 docker-compose up -d kafka elasticsearch kibana spark-master spark-worker kafka-ui
