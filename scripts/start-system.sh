@@ -33,8 +33,8 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Check if Docker Compose is available
-if ! command -v docker-compose &> /dev/null; then
-    print_error "docker-compose not found. Please install Docker Compose."
+if ! docker compose version &> /dev/null; then
+    print_error "docker compose not found. Please install Docker Compose."
     exit 1
 fi
 
@@ -88,7 +88,7 @@ fi
 
 # Step 1: Start infrastructure services
 print_status "Starting infrastructure services (Kafka, Elasticsearch, Spark)..."
-docker-compose up -d kafka elasticsearch kibana spark-master spark-worker kafka-ui
+docker compose up -d kafka elasticsearch kibana spark-master spark-worker kafka-ui
 
 # Wait for services to be ready
 print_status "Waiting for services to be ready..."
@@ -104,11 +104,11 @@ bash scripts/setup-elasticsearch.sh
 
 # Step 4: Start backend services
 print_status "Starting backend API..."
-docker-compose up -d backend
+docker compose up -d backend
 
 # Step 5: Start frontend
 print_status "Starting frontend dashboard..."
-docker-compose up -d frontend
+docker compose up -d frontend
 
 # Step 6: Start alert consumer (in background)
 print_status "Starting alert consumer..."
