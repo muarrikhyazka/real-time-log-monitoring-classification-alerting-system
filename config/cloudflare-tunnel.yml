@@ -1,30 +1,30 @@
 # Cloudflare Tunnel Configuration
 # Replace YOUR_TUNNEL_ID with your actual tunnel ID from Cloudflare
 
-tunnel: YOUR_TUNNEL_ID
-credentials-file: /etc/cloudflared/credentials.json
+tunnel: 53d1c06b-1ebd-4bef-b5e4-f165bda8f988
+credentials-file: /home/muarrikh/.cloudflared/53d1c06b-1ebd-4bef-b5e4-f165bda8f988.json
 
 # Ingress rules - routes traffic to local services
 ingress:
   # Main dashboard
-  - hostname: logs.yourdomain.com
-    service: http://localhost:3000
+  - hostname: log.myghty.cloud
+    service: http://localhost:3003
 
   # API backend
-  - hostname: logs-api.yourdomain.com
+  - hostname: log-api.myghty.cloud
     service: http://localhost:8000
 
   # Kafka UI (optional - for admin access)
-  - hostname: kafka-ui.yourdomain.com
-    service: http://localhost:8080
+  - hostname: kafka-ui.myghty.cloud
+    service: http://localhost:8088
 
   # Kibana (optional - for advanced log analysis)
-  - hostname: kibana.yourdomain.com
-    service: http://localhost:5601
+  - hostname: kibana.myghty.cloud
+    service: http://localhost:5602
 
   # Spark UI (optional - for monitoring Spark jobs)
-  - hostname: spark.yourdomain.com
-    service: http://localhost:8081
+  - hostname: spark.myghty.cloud
+    service: http://localhost:8082
 
   # Catch-all rule (required)
   - service: http_status:404
