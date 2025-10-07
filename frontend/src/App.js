@@ -29,7 +29,6 @@ function App() {
     level: ''
   });
   const [loading, setLoading] = useState(true);
-  const [ws, setWs] = useState(null);
 
   const COLORS = {
     Security: '#ef4444',
@@ -44,7 +43,6 @@ function App() {
 
     websocket.onopen = () => {
       console.log('WebSocket connected');
-      setWs(websocket);
     };
 
     websocket.onmessage = (event) => {
@@ -70,6 +68,7 @@ function App() {
     fetchLogs();
     fetchStats();
     fetchTrends();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-refresh data
