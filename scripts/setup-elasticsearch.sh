@@ -7,7 +7,7 @@ sleep 60
 # Create index template for logs
 echo "Creating Elasticsearch index template..."
 
-curl -X PUT "localhost:9200/_index_template/logs_classified_template" \
+curl -X PUT "localhost:9202/_index_template/logs_classified_template" \
   -H "Content-Type: application/json" \
   -d '{
     "index_patterns": ["logs_classified*"],
@@ -49,4 +49,4 @@ echo "Elasticsearch index template created successfully!"
 
 # Check cluster health
 echo "Elasticsearch cluster health:"
-curl -X GET "localhost:9200/_cluster/health?pretty"
+curl -X GET "localhost:9202/_cluster/health?pretty"
