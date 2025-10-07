@@ -15,15 +15,15 @@ ingress:
     service: http://localhost:8000
 
   # Kafka UI (optional - for admin access)
-  - hostname: kafka-ui.myghty.cloud
+  - hostname: log-kafka.myghty.cloud
     service: http://localhost:8088
 
   # Kibana (optional - for advanced log analysis)
-  - hostname: kibana.myghty.cloud
+  - hostname: log-kibana.myghty.cloud
     service: http://localhost:5602
 
   # Spark UI (optional - for monitoring Spark jobs)
-  - hostname: spark.myghty.cloud
+  - hostname: log-spark.myghty.cloud
     service: http://localhost:8082
 
   # Catch-all rule (required)

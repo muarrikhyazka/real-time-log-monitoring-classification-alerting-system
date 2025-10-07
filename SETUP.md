@@ -99,38 +99,45 @@ open http://localhost:3000
 
 ## Integration with Existing Systems
 
-### Music Recommender Integration
+### Automated Integration
+
+Use the automated integration scripts to quickly set up log monitoring for your projects:
+
+```bash
+# Run the master integration script
+bash scripts/setup-integrations.sh
+```
+
+This will guide you through integrating:
+- Music Recommender
+- HSearch
+- Or both
+
+### Manual Integration
+
+If you prefer manual setup:
 
 1. **Copy the log producer**:
    ```bash
-   cp producers/log_producer.py /path/to/music-recommender/
+   cp producers/log_producer.py /path/to/your-project/
    ```
 
 2. **Install dependencies**:
    ```bash
-   cd /path/to/music-recommender/
+   cd /path/to/your-project/
    pip install kafka-python
    ```
 
 3. **Add to your application**:
    ```python
-   from log_producer import LogProducer
+   import logger_config  # Add this line at the top of your main file
 
-   # Initialize at startup
-   log_producer = LogProducer("music-recommender")
-
-   # Use throughout your application
-   log_producer.send_info("User login successful")
-   log_producer.send_error("Database connection failed")
+   # That's it! All your existing logging will be sent to the monitoring system
    ```
 
-### HSearch Integration
-
-Follow the same steps as above, but use `"hsearch"` as the service name:
-
-```python
-log_producer = LogProducer("hsearch")
-```
+For detailed integration guides, see the individual scripts:
+- `scripts/integrate-music-recommender.sh`
+- `scripts/integrate-hsearch.sh`
 
 ## Cloudflare Tunnel Setup
 
@@ -156,10 +163,11 @@ cloudflared tunnel create log-monitoring
 ### 3. Set DNS Records
 
 ```bash
-# Replace YOUR_TUNNEL_ID with actual tunnel ID
-cloudflared tunnel route dns log-monitoring logs.yourdomain.com
-cloudflared tunnel route dns log-monitoring logs-api.yourdomain.com
-cloudflared tunnel route dns log-monitoring kafka-ui.yourdomain.com
+cloudflared tunnel route dns 53d1c06b-1ebd-4bef-b5e4-f165bda8f988 log.myghty.cloud
+cloudflared tunnel route dns 53d1c06b-1ebd-4bef-b5e4-f165bda8f988 log-api.myghty.cloud
+cloudflared tunnel route dns 53d1c06b-1ebd-4bef-b5e4-f165bda8f988 log-kafka.myghty.cloud
+cloudflared tunnel route dns 53d1c06b-1ebd-4bef-b5e4-f165bda8f988 log-kibana.myghty.cloud
+cloudflared tunnel route dns 53d1c06b-1ebd-4bef-b5e4-f165bda8f988 log-spark.myghty.cloud
 ```
 
 ### 4. Start Tunnel
@@ -178,12 +186,20 @@ sudo systemctl enable cloudflared
 
 ### Access Points
 
-- **Dashboard**: http://localhost:3000 (or https://logs.yourdomain.com)
-- **API**: http://localhost:8000 (or https://logs-api.yourdomain.com)
-- **Kafka UI**: http://localhost:8080
-- **Kibana**: http://localhost:5601
-- **Spark UI**: http://localhost:8081
-- **Elasticsearch**: http://localhost:9200
+**Remote Access (via Cloudflare Tunnel):**
+- **Dashboard**: https://log.myghty.cloud
+- **API**: https://log-api.myghty.cloud
+- **Kafka UI**: https://log-kafka.myghty.cloud
+- **Kibana**: https://log-kibana.myghty.cloud
+- **Spark UI**: https://log-spark.myghty.cloud
+
+**Local Access:**
+- **Dashboard**: http://localhost:3003
+- **API**: http://localhost:8000
+- **Kafka UI**: http://localhost:8088
+- **Kibana**: http://localhost:5602
+- **Spark UI**: http://localhost:8082
+- **Elasticsearch**: http://localhost:9202
 
 ### Health Checks
 
