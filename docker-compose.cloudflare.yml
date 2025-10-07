@@ -1,0 +1,19 @@
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: log-monitoring-cloudflared
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    networks:
+      - log-monitoring-network
+    depends_on:
+      - frontend
+      - backend
+      - kafka-ui
+      - kibana
+      - spark-master
+
+networks:
+  log-monitoring-network:
+    name: real-time-log-monitoring-classification-alerting-system_default
+    external: true
