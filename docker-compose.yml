@@ -38,11 +38,9 @@ services:
       - kafka-data:/tmp/kraft-combined-logs
     command: >
       bash -c "
-      # Generate cluster metadata if not exists
       if [ ! -f /tmp/kraft-combined-logs/meta.properties ]; then
-        kafka-storage format -t MkU3OEVBNTcwNTJENDM2Qk -c /etc/kafka/kafka.properties
-      fi
-      # Start Kafka
+        kafka-storage format -t MkU3OEVBNTcwNTJENDM2Qk -c /etc/kafka/docker/server.properties;
+      fi;
       /etc/confluent/docker/run
       "
 
