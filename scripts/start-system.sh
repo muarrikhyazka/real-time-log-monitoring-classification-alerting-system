@@ -113,24 +113,24 @@ docker compose up -d frontend
 # Step 6: Start alert consumer (in background)
 print_status "Starting alert consumer..."
 cd backend
-python alert_consumer.py &
+python3 alert_consumer.py &
 ALERT_PID=$!
 cd ..
 
 # Step 7: Start Spark streaming job (in background)
 print_status "Starting Spark streaming job..."
 cd spark
-python log_processor.py &
+python3 log_processor.py &
 SPARK_PID=$!
 cd ..
 
 # Step 8: Start log producers for testing (optional)
 print_status "Starting log producers (for testing)..."
 cd producers
-python music_recommender_producer.py &
+python3 music_recommender_producer.py &
 MUSIC_PID=$!
 
-python hsearch_producer.py &
+python3 hsearch_producer.py &
 HSEARCH_PID=$!
 cd ..
 
