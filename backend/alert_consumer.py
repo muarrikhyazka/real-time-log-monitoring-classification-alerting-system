@@ -134,12 +134,12 @@ def main():
         auto_offset_reset='latest',
         group_id='alert_consumer_group',
         enable_auto_commit=True,
-        auto_commit_interval_ms=1000,
-        max_poll_interval_ms=600000,  # 10 minutes
+        auto_commit_interval_ms=5000,
+        max_poll_interval_ms=300000,  # 5 minutes
         max_poll_records=10,
-        session_timeout_ms=60000,  # 1 minute
+        session_timeout_ms=30000,  # 30 seconds
         heartbeat_interval_ms=10000,  # 10 seconds
-        request_timeout_ms=60000  # 1 minute
+        request_timeout_ms=60000  # 1 minute (must be > session_timeout_ms)
     )
 
     logger.info("Listening for alerts...")
