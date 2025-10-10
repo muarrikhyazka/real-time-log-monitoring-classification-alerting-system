@@ -119,8 +119,8 @@ def simulate_music_recommender_logs():
             event = random.choice(events)
             event()
 
-            # Wait 1-5 seconds between events
-            time.sleep(random.uniform(1, 5))
+            # Wait 2-10 seconds between events (reduced load)
+            time.sleep(random.uniform(2, 10))
 
     except KeyboardInterrupt:
         print("Stopping log simulation...")

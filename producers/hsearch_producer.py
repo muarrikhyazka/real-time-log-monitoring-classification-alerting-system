@@ -170,8 +170,8 @@ def simulate_hsearch_logs():
             event = random.choice(events)
             event()
 
-            # Wait 1-4 seconds between events
-            time.sleep(random.uniform(1, 4))
+            # Wait 2-8 seconds between events (reduced load)
+            time.sleep(random.uniform(2, 8))
 
     except KeyboardInterrupt:
         print("Stopping log simulation...")

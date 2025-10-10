@@ -132,7 +132,14 @@ def main():
         bootstrap_servers=[os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')],
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
         auto_offset_reset='latest',
-        group_id='alert_consumer_group'
+        group_id='alert_consumer_group',
+        enable_auto_commit=True,
+        auto_commit_interval_ms=1000,
+        max_poll_interval_ms=600000,  # 10 minutes
+        max_poll_records=10,
+        session_timeout_ms=60000,  # 1 minute
+        heartbeat_interval_ms=10000,  # 10 seconds
+        request_timeout_ms=60000  # 1 minute
     )
 
     logger.info("Listening for alerts...")

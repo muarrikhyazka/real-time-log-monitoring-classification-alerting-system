@@ -15,9 +15,13 @@ class LogProducer:
         self.producer = KafkaProducer(
             bootstrap_servers=[kafka_servers],
             value_serializer=lambda x: json.dumps(x).encode('utf-8'),
-            acks='all',
+            acks=1,  # Changed from 'all' to reduce latency
             retries=3,
-            retry_backoff_ms=1000
+            retry_backoff_ms=1000,
+            request_timeout_ms=60000,  # 1 minute
+            max_block_ms=10000,  # 10 seconds max blocking
+            linger_ms=100,  # Batch messages for better throughput
+            compression_type='gzip'  # Compress messages to reduce network load
         )
 
         # Set up logging
