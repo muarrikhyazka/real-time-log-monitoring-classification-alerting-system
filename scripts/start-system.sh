@@ -94,37 +94,45 @@ docker compose up -d kafka elasticsearch kibana spark-master spark-worker kafka-
 print_status "Waiting for services to be ready..."
 sleep 30
 
-# Step 2: Set up Kafka topics
+# Step 2: Install Python dependencies
+print_status "Installing Python dependencies..."
+if [ -f requirements.txt ]; then
+    python3 -m pip install -r requirements.txt
+else
+    print_warning "requirements.txt not found, skipping dependency installation"
+fi
+
+# Step 3: Set up Kafka topics
 print_status "Setting up Kafka topics..."
 bash scripts/setup-kafka-topics.sh
 
-# Step 3: Set up Elasticsearch index
+# Step 4: Set up Elasticsearch index
 print_status "Setting up Elasticsearch index..."
 bash scripts/setup-elasticsearch.sh
 
-# Step 4: Start backend services
+# Step 5: Start backend services
 print_status "Starting backend API..."
 docker compose up -d backend
 
-# Step 5: Start frontend
+# Step 6: Start frontend
 print_status "Starting frontend dashboard..."
 docker compose up -d frontend
 
-# Step 6: Start alert consumer (in background)
+# Step 7: Start alert consumer (in background)
 print_status "Starting alert consumer..."
 cd backend
 python3 alert_consumer.py &
 ALERT_PID=$!
 cd ..
 
-# Step 7: Start Spark streaming job (in background)
+# Step 8: Start Spark streaming job (in background)
 print_status "Starting Spark streaming job..."
 cd spark
 python3 log_processor.py &
 SPARK_PID=$!
 cd ..
 
-# Step 8: Start log producers for testing (optional)
+# Step 9: Start log producers for testing (optional)
 print_status "Starting log producers (for testing)..."
 cd producers
 python3 music_recommender_producer.py &
