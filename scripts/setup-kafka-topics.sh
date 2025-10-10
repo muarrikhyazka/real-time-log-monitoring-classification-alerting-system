@@ -2,7 +2,23 @@
 
 # Wait for Kafka to be ready
 echo "Waiting for Kafka to be ready..."
-sleep 30
+max_attempts=30
+attempt=0
+
+while [ $attempt -lt $max_attempts ]; do
+  if docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; then
+    echo "Kafka is ready!"
+    break
+  fi
+  echo "Waiting for Kafka... (attempt $((attempt+1))/$max_attempts)"
+  sleep 2
+  attempt=$((attempt+1))
+done
+
+if [ $attempt -eq $max_attempts ]; then
+  echo "Error: Kafka failed to start in time"
+  exit 1
+fi
 
 # Create Kafka topics
 echo "Creating Kafka topics..."
