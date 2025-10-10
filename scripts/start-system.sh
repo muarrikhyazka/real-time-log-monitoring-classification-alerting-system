@@ -41,7 +41,15 @@ fi
 # Check if Java is installed
 if ! command -v java &> /dev/null; then
     print_warning "Java is not installed. Installing OpenJDK 11..."
-    sudo apt-get update
+
+    # Clean apt cache if update fails
+    if ! sudo apt-get update 2>/dev/null; then
+        print_warning "APT cache corrupted. Cleaning and retrying..."
+        sudo rm -rf /var/lib/apt/lists/*
+        sudo mkdir -p /var/lib/apt/lists/partial
+        sudo apt-get update
+    fi
+
     sudo apt-get install -y openjdk-11-jdk
 
     # Set JAVA_HOME
