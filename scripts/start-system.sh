@@ -38,6 +38,34 @@ if ! docker compose version &> /dev/null; then
     exit 1
 fi
 
+# Check if Java is installed
+if ! command -v java &> /dev/null; then
+    print_warning "Java is not installed. Installing OpenJDK 11..."
+    sudo apt-get update
+    sudo apt-get install -y openjdk-11-jdk
+
+    # Set JAVA_HOME
+    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    print_status "Java installed successfully. JAVA_HOME set to: $JAVA_HOME"
+fi
+
+# Set JAVA_HOME if not already set
+if [ -z "$JAVA_HOME" ]; then
+    if [ -d "/usr/lib/jvm/java-11-openjdk-amd64" ]; then
+        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    elif [ -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    elif [ -d "/usr/lib/jvm/default-java" ]; then
+        export JAVA_HOME=/usr/lib/jvm/default-java
+    elif command -v java &> /dev/null; then
+        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+    fi
+
+    if [ -n "$JAVA_HOME" ]; then
+        print_status "JAVA_HOME set to: $JAVA_HOME"
+    fi
+fi
+
 # Check if .env file exists
 if [ ! -f .env ]; then
     print_warning ".env file not found!"
@@ -128,27 +156,6 @@ cd ..
 # Step 8: Start Spark streaming job (in background)
 print_status "Starting Spark streaming job..."
 cd spark
-
-# Set JAVA_HOME if not already set
-if [ -z "$JAVA_HOME" ]; then
-    # Try to find Java installation
-    if [ -d "/usr/lib/jvm/java-11-openjdk-amd64" ]; then
-        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-    elif [ -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
-        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    elif [ -d "/usr/lib/jvm/default-java" ]; then
-        export JAVA_HOME=/usr/lib/jvm/default-java
-    elif command -v java &> /dev/null; then
-        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-    else
-        print_warning "JAVA_HOME not set and Java not found. Spark job may fail."
-    fi
-
-    if [ -n "$JAVA_HOME" ]; then
-        print_status "JAVA_HOME set to: $JAVA_HOME"
-    fi
-fi
-
 python3 log_processor.py &
 SPARK_PID=$!
 cd ..
